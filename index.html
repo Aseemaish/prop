@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary, My Love</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --primary-text: #fee2e2; /* Lighter red-pink text for better contrast */
+            --accent-color: #ef4444; /* True Red */
+            --accent-hover: #f87171; /* Lighter Red for hover */
+            --card-bg: rgba(127, 29, 29, 0.5); /* Darker Red card BG */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+        .font-dancing { font-family: 'Dancing Script', cursive; }
+        .text-red-500 { color: var(--accent-color); }
+        .bg-red-900\/50 { background-color: var(--card-bg); }
+        .shadow-red { box-shadow: 0 0 25px rgba(239, 68, 68, 0.6); }
+
+        /* --- Loader --- */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-color); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.5s ease; }
+        .loader-heart { font-size: 3rem; color: var(--accent-color); animation: loader-beat 1s ease-in-out infinite; }
+        @keyframes loader-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.3); } }
+        
+        /* --- Floating Hearts & Roses --- */
+        .particle { position: absolute; pointer-events: none; opacity: 0; animation: floatUp 12s linear infinite; }
+        .particle.heart { font-size: 1.5rem; color: var(--accent-color); }
+        .particle.rose { font-size: 2rem; }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10%, 90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Scroll-based Animations --- */
+        .reveal { opacity: 0; transform: translateY(50px); transition: opacity 1s ease-out, transform 1s ease-out; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- Card Flip Animation --- */
+        .flip-card { perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; text-align: center; padding: 1rem; border-radius: 1rem; }
+        .flip-card-front { background-color: var(--card-bg); }
+        .flip-card-back { background-color: var(--accent-color); color: white; transform: rotateY(180deg); }
+
+        /* --- Photo Gallery Lightbox --- */
+        #lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #lightbox.active { opacity: 1; pointer-events: all; }
+        #lightbox img { max-width: 90%; max-height: 80%; object-fit: contain; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-hover); }
+
+        /* Adventure Map styles */
+        .map-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw-path 5s ease-in-out forwards;
+        }
+        @keyframes draw-path { to { stroke-dashoffset: 0; } }
+        .map-dot { animation: pulse-dot 2s infinite ease-in-out; }
+        @keyframes pulse-dot { 0%, 100% { r: 6; opacity: 1; } 50% { r: 10; opacity: 0.7; } }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    
+    <div id="loader"><div class="loader-heart">❤️</div></div>
+    <div id="particle-container" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></div>
+
+    <main class="w-full opacity-0" id="main-content">
+        <!-- Hero Section -->
+        <section class="h-screen flex flex-col items-center justify-center text-center p-4 relative">
+            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+            <div class="z-10">
+                <h1 id="hero-title" class="font-dancing text-6xl md:text-8xl text-red-500 opacity-0" style="transform: translateY(30px);">For My Shreyasee</h1>
+                <p id="hero-subtitle" class="text-xl md:text-2xl mt-4 text-red-100 opacity-0" style="transform: translateY(30px);">This isn't just a website. It's a feeling.</p>
+                <div id="scroll-indicator" class="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0">
+                     <svg class="w-8 h-8 text-red-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Countdown Section -->
+        <section class="py-20 px-4 text-center">
+            <h2 class="font-dancing text-5xl md:text-6xl text-red-500 mb-4 reveal">Our Special Day is Almost Here</h2>
+            <p class="text-red-100 mb-12 max-w-2xl mx-auto reveal">Counting down every second...</p>
+            <div id="countdown" class="grid grid-cols-4 gap-2 md:gap-4 max-w-2xl mx-auto text-white reveal">
+                <div class="bg-red-900/50 p-4 rounded-lg shadow-red"><div id="days" class="text-4xl md:text-6xl font-bold">00</div><span class="text-sm text-red-200">Days</span></div>
+                <div class="bg-red-900/50 p-4 rounded-lg shadow-red"><div id="hours" class="text-4xl md:text-6xl font-bold">00</div><span class="text-sm text-red-200">Hours</span></div>
+                <div class="bg-red-900/50 p-4 rounded-lg shadow-red"><div id="minutes" class="text-4xl md:text-6xl font-bold">00</div><span class="text-sm text-red-200">Minutes</span></div>
+                <div class="bg-red-900/50 p-4 rounded-lg shadow-red"><div id="seconds" class="text-4xl md:text-6xl font-bold">00</div><span class="text-sm text-red-200">Seconds</span></div>
+            </div>
+        </section>
+
+        <!-- Museum of Moments Section -->
+        <section class="py-20 px-4 md:px-8 max-w-4xl mx-auto">
+            <h2 class="font-dancing text-5xl md:text-6xl text-center text-red-500 mb-16 reveal">The Museum of Our Moments 🌹</h2>
+            <div class="space-y-16">
+                <!-- Moments here... -->
+                <div class="flex flex-col md:flex-row items-center reveal"><div class="w-24 h-24 bg-red-900/50 rounded-full flex items-center justify-center text-3xl font-dancing shadow-red mb-4 md:mb-0 md:mr-8 shrink-0">A</div><div><h3 class="text-2xl font-semibold text-red-100">The Sound of Your Laughter</h3><p class="text-red-200 mt-2">The way you laughed at my terrible joke last week. It’s a sound I’d bottle up and keep forever if I could.</p></div></div>
+                <div class="flex flex-col md:flex-row-reverse items-center text-right md:text-right reveal"><div class="w-24 h-24 bg-red-900/50 rounded-full flex items-center justify-center text-3xl font-dancing shadow-red mb-4 md:mb-0 md:ml-8 shrink-0">B</div><div><h3 class="text-2xl font-semibold text-red-100">The Late-Night Wisdom</h3><p class="text-red-200 mt-2">Our 2 AM talks about childhood dreams. My world always feels bigger and safer after our conversations.</p></div></div>
+                <div class="flex flex-col md:flex-row items-center reveal"><div class="w-24 h-24 bg-red-900/50 rounded-full flex items-center justify-center text-3xl font-dancing shadow-red mb-4 md:mb-0 md:mr-8 shrink-0">C</div><div><h3 class="text-2xl font-semibold text-red-100">The Chicken Cravings Chronicle</h3><p class="text-red-200 mt-2">For your unwavering and frankly inspiring love for chicken. My life's mission is now to ensure you're never far from a good butter chicken.</p></div></div>
+            </div>
+        </section>
+        
+        <!-- Adventure Map Section -->
+        <section class="py-20 px-4 md:px-8 max-w-4xl mx-auto text-center">
+             <h2 class="font-dancing text-5xl md:text-6xl text-red-500 mb-12 reveal">Our Adventure Map 🗺️</h2>
+             <div class="bg-red-900/50 p-6 rounded-lg shadow-red reveal">
+                <svg viewBox="0 0 400 200" class="w-full">
+                    <path class="map-path" d="M 50 150 C 100 50, 200 50, 250 150 S 300 50, 350 150" stroke="var(--accent-color)" fill="transparent" stroke-width="2" stroke-linecap="round"/>
+                    <g transform="translate(50, 150)">
+                        <circle class="map-dot" fill="var(--accent-hover)" r="6"/>
+                        <text fill="var(--primary-text)" y="-15" text-anchor="middle" font-size="12">Where it Began</text>
+                    </g>
+                    <g transform="translate(150, 60)">
+                        <circle class="map-dot" fill="var(--accent-hover)" r="6" style="animation-delay: 1s;"/>
+                        <text fill="var(--primary-text)" y="-15" text-anchor="middle" font-size="12">First Inside Joke</text>
+                    </g>
+                     <g transform="translate(250, 150)">
+                        <circle class="map-dot" fill="var(--accent-hover)" r="6" style="animation-delay: 2s;"/>
+                        <text fill="var(--primary-text)" y="-15" text-anchor="middle" font-size="12">That Deep Talk</text>
+                    </g>
+                    <g transform="translate(350, 150)">
+                        <circle class="map-dot" fill="var(--accent-hover)" r="6" style="animation-delay: 3s;"/>
+                        <text fill="var(--primary-text)" y="-15" text-anchor="middle" font-size="12">Future Adventures</text>
+                    </g>
+                </svg>
+             </div>
+        </section>
+
+        <!-- Playlist Section -->
+        <section class="py-20 px-4 md:px-8 max-w-4xl mx-auto text-center">
+            <h2 class="font-dancing text-5xl md:text-6xl text-red-500 mb-4 reveal">A Playlist For You 🎵</h2>
+            <p class="text-red-100 mb-12 max-w-2xl mx-auto reveal">Songs that feel like you.</p>
+            <div class="bg-red-900/50 p-6 rounded-lg shadow-red max-w-md mx-auto text-left space-y-4 reveal">
+                <div class="flex items-center space-x-4 p-2 rounded-lg hover:bg-red-800/50 transition-colors">
+                    <span class="text-red-400">1</span>
+                    <div><div class="font-semibold">Perfect</div><div class="text-sm text-red-200">Ed Sheeran</div></div>
+                </div>
+                 <div class="flex items-center space-x-4 p-2 rounded-lg hover:bg-red-800/50 transition-colors">
+                    <span class="text-red-400">2</span>
+                    <div><div class="font-semibold">A Thousand Years</div><div class="text-sm text-red-200">Christina Perri</div></div>
+                </div>
+                 <div class="flex items-center space-x-4 p-2 rounded-lg hover:bg-red-800/50 transition-colors">
+                    <span class="text-red-400">3</span>
+                    <div><div class="font-semibold">Iktara</div><div class="text-sm text-red-200">Amit Trivedi, Kavita Seth</div></div>
+                </div>
+                 <div class="flex items-center space-x-4 p-2 rounded-lg hover:bg-red-800/50 transition-colors">
+                    <span class="text-red-400">4</span>
+                    <div><div class="font-semibold">Tujh Mein Rab Dikhta Hai</div><div class="text-sm text-red-200">Roop Kumar Rathod</div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ... Other sections like Gallery, Interactive Heart, Letter ... -->
+        <section class="py-20 px-4 md:px-8 max-w-6xl mx-auto text-center">
+            <h2 class="font-dancing text-5xl md:text-6xl text-red-500 mb-12 reveal">Our Gallery of Memories</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="reveal"><img src="https://placehold.co/600x400/ef4444/ffffff?text=Our+First+Memory" alt="Gallery image" class="rounded-lg shadow-red cursor-pointer hover:scale-105 transition-transform duration-300 gallery-img"></div>
+                <div class="reveal"><img src="https://placehold.co/600x400/f87171/ffffff?text=That+Funny+Moment" alt="Gallery image" class="rounded-lg shadow-red cursor-pointer hover:scale-105 transition-transform duration-300 gallery-img"></div>
+                <div class="reveal"><img src="https://placehold.co/600x400/fb7185/ffffff?text=A+Special+Day" alt="Gallery image" class="rounded-lg shadow-red cursor-pointer hover:scale-105 transition-transform duration-300 gallery-img"></div>
+                <div class="reveal"><img src="https://placehold.co/600x400/f472b6/ffffff?text=Just+Us" alt="Gallery image" class="rounded-lg shadow-red cursor-pointer hover:scale-105 transition-transform duration-300 gallery-img"></div>
+                <div class="reveal"><img src="https://placehold.co/600x400/e879f9/ffffff?text=Another+Laugh" alt="Gallery image" class="rounded-lg shadow-red cursor-pointer hover:scale-105 transition-transform duration-300 gallery-img"></div>
+                <div class="reveal"><img src="https://placehold.co/600x400/c084fc/ffffff?text=More+To+Come" alt="Gallery image" class="rounded-lg shadow-red cursor-pointer hover:scale-105 transition-transform duration-300 gallery-img"></div>
+            </div>
+        </section>
+        <div id="lightbox"><img id="lightbox-img" src=""></div>
+        
+        <section class="py-20 px-4 text-center">
+            <h2 class="font-dancing text-5xl md:text-6xl text-center text-red-500 mb-8 reveal">A Message from My Heart</h2>
+            <p class="text-red-100 mb-12 max-w-2xl mx-auto reveal">Click the heart to see...</p>
+            <div class="relative flex justify-center items-center reveal">
+                <svg id="interactive-heart" class="w-40 h-40 text-red-500 drop-shadow-red" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <p id="heart-message" class="absolute inset-0 flex items-center justify-center text-white font-semibold text-lg opacity-0 transition-opacity duration-500 pointer-events-none">You are my home.</p>
+            </div>
+        </section>
+
+        <section class="py-20 px-4 md:px-8 max-w-4xl mx-auto">
+            <div class="bg-red-900/50 p-8 rounded-2xl shadow-red reveal">
+                <h2 class="font-dancing text-5xl text-center text-red-500 mb-6">My Dearest Shreyasee,</h2>
+                <div class="text-red-100 text-lg space-y-6">
+                    <p>Happy Anniversary.</p>
+                    <p>The 8th of every month has become my own personal festival. It's more sacred than Diwali, more colorful than Holi, and more anticipated than any holiday. Because this is the day I celebrate my single greatest source of light, color, and joy in this world—you.</p>
+                    <p>So today, instead of making promises, I just want to tell you what this day means to me. This '8th' isn't just a date; it's my reminder. It's a reminder of how incredibly lucky I am, to cherish what we have, and to always strive to be the man that a woman like you deserves. It’s not a promise; it's my heart's deepest intention.</p>
+                    <p>You turned my ordinary timeline into a series of celebrations. Thank you for making my life a festival.</p>
+                    <p class="text-right font-dancing text-3xl mt-8 text-red-500">Yours, on every 8th to come,<br>Aseem</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-10 text-red-200">
+            <p>&copy; September 8th, 2025. A new chapter begins.</p>
+        </footer>
+    </main>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainContent = document.getElementById('main-content');
+            const loader = document.getElementById('loader');
+
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    mainContent.style.transition = 'opacity 0.5s ease';
+                    mainContent.style.opacity = '1';
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }, 1000); 
+            });
+            
+            // --- Floating Hearts & Roses ---
+            const particleContainer = document.getElementById('particle-container');
+            const particleTypes = ['❤️', '🌹'];
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const type = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                if(type === '❤️') particle.classList.add('heart');
+                else particle.classList.add('rose');
+                
+                particle.innerText = type;
+                particle.style.left = `${Math.random() * 100}vw`;
+                particle.style.animationDuration = `${Math.random() * 5 + 7}s`; // 7-12s duration
+                particle.style.fontSize = `${Math.random() * 1 + 1}rem`; // 1-2rem size
+                particle.style.animationDelay = `${Math.random() * 2}s`;
+                particleContainer.appendChild(particle);
+                setTimeout(() => particle.remove(), 12000);
+            }
+            setInterval(createParticle, 200);
+
+            // --- Hero Animation ---
+            // Same as before
+
+            // --- Countdown Timer ---
+            const countdownDate = new Date("Sep 8, 2025 00:00:00").getTime();
+            const countdownElement = document.getElementById('countdown');
+            if (countdownElement) {
+                const timer = setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = countdownDate - now;
+                    
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    
+                    document.getElementById('days').innerText = String(days).padStart(2, '0');
+                    document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+                    document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+                    document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+                    
+                    if (distance < 0) {
+                        clearInterval(timer);
+                        countdownElement.innerHTML = "<div class='col-span-4 text-3xl font-dancing text-red-300'>Happy Anniversary! ❤️</div>";
+                    }
+                }, 1000);
+            }
+            
+            // --- Scroll Reveal Animation ---
+            // Same as before
+
+            // --- Interactive Heart ---
+            // Same as before
+
+            // --- Photo Gallery Lightbox ---
+            // Same as before
+        });
+    </script>
+</body>
+</html>
+
