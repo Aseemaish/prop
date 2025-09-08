@@ -74,6 +74,10 @@
     </style>
 </head>
 <body class="overflow-x-hidden">
+    <audio id="bg-music" loop>
+    <source src="https://www.chosic.com/wp-content/uploads/2021/04/forgotten-time-15941.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
     
     <div id="loader"><div class="loader-heart">❤️</div></div>
     <div id="particle-container" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"></div>
@@ -219,6 +223,20 @@
     <div id="lightbox"><img id="lightbox-img" src=""></div>
     
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // ... other code ...
+
+        const enterButton = document.getElementById('enter-button');
+        const backgroundMusic = document.getElementById('bg-music');
+
+        enterButton.addEventListener('click', () => {
+            backgroundMusic.play(); // This is the line that starts the music
+            
+            // ... the rest of the code that fades the screen ...
+        });
+
+        // ... other code ...
+    });
         document.addEventListener('DOMContentLoaded', () => {
             const mainContent = document.getElementById('main-content');
             const loader = document.getElementById('loader');
